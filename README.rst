@@ -3,7 +3,7 @@
 ================
 
 .. image:: https://img.shields.io/pypi/v/nti.fakestatsd.svg
-        :target: https://pypi.python.org/pypi/nti.fakestatsd/
+        :target: https://pypi.org/project/nti.fakestatsd/
         :alt: Latest release
 
 .. image:: https://img.shields.io/pypi/pyversions/nti.fakestatsd.svg
