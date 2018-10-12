@@ -12,8 +12,9 @@ jobs:
         dist: xenial
         sudo: true
 script:
-  - coverage run -m zope.testrunner --test-path=src  --auto-color --auto-progress
+  - coverage run -m zope.testrunner --test-path=src  --auto-color
 after_success:
+  - coverage report
   - coveralls
 notifications:
   email: dev-regression-tests@nextthought.com
