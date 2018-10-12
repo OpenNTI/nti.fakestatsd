@@ -1,6 +1,6 @@
 [run]
-source = nti.schema
-omit = src/nti/schema/tests/*benchmark.py
+source = nti.fakestatsd
+
 
 [report]
 # Coverage is run on Linux under cPython 2 and 3,
