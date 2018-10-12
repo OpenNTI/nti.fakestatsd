@@ -14,7 +14,7 @@ def _read(fname):
 
 
 setup(
-    name='nti.schema',
+    name='nti.fakestatsd',
     version=version,
     author='Chris Utz',
     author_email='open-source@nextthought.com',
