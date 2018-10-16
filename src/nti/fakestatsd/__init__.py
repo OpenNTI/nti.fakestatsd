@@ -57,8 +57,8 @@ def _as_metrics(data):
 
         # Metrics take the form of <name>:<value>|<type>(|@<sampling_rate>)
         parts = metric_data.split(b'|')
-        if len(parts) > 3:
-            raise ValueError('Unexpected metric data %s. Too Many Parts' % metric_data)
+        if len(parts) < 2 or len(parts) > 3:
+            raise ValueError('Unexpected metric data %s. Wrong number of parts' % metric_data)
 
         if len(parts) == 3:
             sampling_data = parts.pop(-1)
