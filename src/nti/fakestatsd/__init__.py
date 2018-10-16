@@ -34,10 +34,10 @@ class Timer(AbstractMetric):
         self.kind = kind
 
 METRIC_TYPES = {
-    b'g': Gauge,
-    b'c': Counter,
-    b's': Timer,
-    b'ms': Timer
+    'g': Gauge,
+    'c': Counter,
+    's': Timer,
+    'ms': Timer
 }
 
 def _as_metrics(data):
@@ -49,25 +49,25 @@ def _as_metrics(data):
     metrics = []
 
     # Start by splitting newlines. this may be a multi-metric packet
-    for metric_data in data.split(b'\n'):
+    for metric_data in data.split('\n'):
         sampling = None
         name = None
         value = None
         kind = None
 
         # Metrics take the form of <name>:<value>|<type>(|@<sampling_rate>)
-        parts = metric_data.split(b'|')
+        parts = metric_data.split('|')
         if len(parts) < 2 or len(parts) > 3:
             raise ValueError('Unexpected metric data %s. Wrong number of parts' % metric_data)
 
         if len(parts) == 3:
             sampling_data = parts.pop(-1)
-            if not sampling_data.startswith(b'@'):
+            if not sampling_data.startswith('@'):
                 raise ValueError('Expected "@" in sampling data. %s' % metric_data)
             sampling = float(sampling_data[1:])
 
         kind = parts[1]
-        name, value = parts[0].split(b':')
+        name, value = parts[0].split(':')
 
         metrics.append(METRIC_TYPES[kind](name, value, sampling, kind))
     return metrics
@@ -91,6 +91,11 @@ class FakeStatsDClient(StatsdClient):
 
         class DummySocket(object):
             def sendto(self, data, addr):
+                # The client encoded to bytes
+                assert isinstance(data, bytes)
+                # We always want native strings here, that's what the
+                # user specified when calling the StatsdClient methods.
+                data = data.decode('utf-8') if bytes is not str else data
                 _raw.append((data, addr,))
                 for m in _as_metrics(data):
                     _metrics.append((m, addr,))

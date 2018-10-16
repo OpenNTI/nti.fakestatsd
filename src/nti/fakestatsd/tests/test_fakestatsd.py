@@ -32,84 +32,84 @@ from .. import _as_metrics
 class TestStatsDParsing(unittest.TestCase):
 
     def test_invalid_packet(self):
-        packet = b'junk'
+        packet = 'junk'
         assert_that(calling(functools.partial(_as_metrics, packet)),
                     raises(ValueError))
 
-        packet = b'foo|bar|baz|junk'
+        packet = 'foo|bar|baz|junk'
         assert_that(calling(functools.partial(_as_metrics, packet)),
                     raises(ValueError))
 
-        packet = b'gorets:1|c|0.1'
+        packet = 'gorets:1|c|0.1'
         assert_that(calling(functools.partial(_as_metrics, packet)),
                     raises(ValueError))
 
     def test_counter(self):
-        packet = b'gorets:1|c'
+        packet = 'gorets:1|c'
         metric = _as_metrics(packet)
 
         assert_that(metric, has_length(1))
         metric = metric[0]
 
         assert_that(metric, instance_of(Counter))
-        assert_that(metric.name, is_(b'gorets'))
-        assert_that(metric.value, is_(b'1'))
+        assert_that(metric.name, is_('gorets'))
+        assert_that(metric.value, is_('1'))
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_sampled_counter(self):
-        packet = b'gorets:1|c|@0.1'
+        packet = 'gorets:1|c|@0.1'
         metric = _as_metrics(packet)
 
         assert_that(metric, has_length(1))
         metric = metric[0]
 
         assert_that(metric, instance_of(Counter))
-        assert_that(metric.name, is_(b'gorets'))
-        assert_that(metric.value, is_(b'1'))
+        assert_that(metric.name, is_('gorets'))
+        assert_that(metric.value, is_('1'))
         assert_that(metric.sampling_rate, is_(0.1))
 
     def test_timer(self):
-        packet = b'glork:320|ms'
+        packet = 'glork:320|ms'
         metric = _as_metrics(packet)
 
         assert_that(metric, has_length(1))
         metric = metric[0]
 
         assert_that(metric, instance_of(Timer))
-        assert_that(metric.name, is_(b'glork'))
-        assert_that(metric.value, is_(b'320'))
-        assert_that(metric, has_property('kind', is_(b'ms')))
+        assert_that(metric.name, is_('glork'))
+        assert_that(metric.value, is_('320'))
+        assert_that(metric, has_property('kind', is_('ms')))
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_timer_seconds(self):
-        packet = b'glork:3|s'
+        packet = 'glork:3|s'
         metric = _as_metrics(packet)
 
         assert_that(metric, has_length(1))
         metric = metric[0]
 
         assert_that(metric, instance_of(Timer))
-        assert_that(metric.name, is_(b'glork'))
-        assert_that(metric.value, is_(b'3'))
-        assert_that(metric, has_property('kind', is_(b's')))
+        assert_that(metric.name, is_('glork'))
+        assert_that(metric.value, is_('3'))
+        assert_that(metric, has_property('kind', is_('s')))
         # type is BWC
-        assert_that(metric, has_property('type', is_(b's')))
+        assert_that(metric, has_property('type', is_('s')))
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_guage(self):
-        packet = b'gaugor:+333|g'
+        packet = 'gaugor:+333|g'
         metric = _as_metrics(packet)
 
         assert_that(metric, has_length(1))
         metric = metric[0]
 
         assert_that(metric, instance_of(Gauge))
-        assert_that(metric.name, is_(b'gaugor'))
-        assert_that(metric.value, is_(b'+333'))
+        assert_that(metric.name, is_('gaugor'))
+        assert_that(metric.value, is_('+333'))
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_multi_metric(self):
-        packet = b'gorets:1|c\nglork:320|ms\ngaugor:333|g\nuniques:765|s'
+        packet = 'gorets:1|c\nglork:320|ms\ngaugor:333|g\nuniques:765|s'
         metrics = _as_metrics(packet)
         assert_that(metrics, contains(instance_of(Counter),
                                       instance_of(Timer),
@@ -132,19 +132,19 @@ class TestMockStatsDClient(unittest.TestCase):
         counter, gauge, timer = self.client.metrics
 
         assert_that(counter, instance_of(Counter))
-        assert_that(counter, has_properties('name', b'mycounter',
-                                            'value', b'1'))
+        assert_that(counter, has_properties('name', 'mycounter',
+                                            'value', '1'))
 
         assert_that(gauge, instance_of(Gauge))
-        assert_that(gauge, has_properties('name', b'mygauge',
-                                          'value', b'5'))
+        assert_that(gauge, has_properties('name', 'mygauge',
+                                          'value', '5'))
 
         assert_that(timer, instance_of(Timer))
         assert_that(timer, has_properties(
-            'name', b'mytimer',
-            'value', b'3003',
-            'type', b'ms', # bwc
-            'kind', b'ms',
+            'name', 'mytimer',
+            'value', '3003',
+            'type', 'ms', # bwc
+            'kind', 'ms',
         ))
 
     def test_clear(self):
@@ -160,7 +160,7 @@ class TestMockStatsDClient(unittest.TestCase):
         self.client._send(packet)
 
         assert_that(self.client, has_length(4))
-        assert_that(self.client.packets, contains(packet.encode('ascii')))
+        assert_that(self.client.packets, contains(packet))
 
         assert_that(self.client.metrics, contains(instance_of(Counter),
                                                   instance_of(Timer),
