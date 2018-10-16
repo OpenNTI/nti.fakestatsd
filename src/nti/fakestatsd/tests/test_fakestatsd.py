@@ -7,6 +7,8 @@ __docformat__ = "restructuredtext en"
 # disable: accessing protected members, too many methods
 # pylint: disable=W0212,R0904
 
+import functools
+
 import unittest
 
 from hamcrest import none
@@ -17,6 +19,8 @@ from hamcrest import has_length
 from hamcrest import instance_of
 from hamcrest import has_properties
 from hamcrest import has_property
+from hamcrest import calling
+from hamcrest import raises
 
 from .. import FakeStatsDClient as MockStatsDClient
 from .. import Counter
@@ -26,6 +30,19 @@ from .. import _as_metrics
 
 
 class TestStatsDParsing(unittest.TestCase):
+
+    def test_invalid_packet(self):
+        packet = b'junk'
+        assert_that(calling(functools.partial(_as_metrics, packet)),
+                    raises(ValueError))
+
+        packet = b'foo|bar|baz|junk'
+        assert_that(calling(functools.partial(_as_metrics, packet)),
+                    raises(ValueError))
+
+        packet = b'gorets:1|c|0.1'
+        assert_that(calling(functools.partial(_as_metrics, packet)),
+                    raises(ValueError))
 
     def test_counter(self):
         packet = b'gorets:1|c'
@@ -136,3 +153,16 @@ class TestMockStatsDClient(unittest.TestCase):
 
         self.client.clear()
         assert_that(self.client, has_length(0))
+
+
+    def test_tracks_multimetrics(self):
+        packet = b'gorets:1|c\nglork:320|ms\ngaugor:333|g\nuniques:765|s'
+        self.client._send(packet)
+
+        assert_that(self.client, has_length(4))
+        assert_that(self.client.packets, contains(packet))
+
+        assert_that(self.client.metrics, contains(instance_of(Counter),
+                                                  instance_of(Timer),
+                                                  instance_of(Gauge),
+                                                  instance_of(Timer)))
