@@ -26,6 +26,7 @@ from .. import FakeStatsDClient as MockStatsDClient
 from .. import Counter
 from .. import Gauge
 from .. import Timer
+from .. import Set
 from .. import _as_metrics
 
 
@@ -78,7 +79,6 @@ class TestStatsDParsing(unittest.TestCase):
         assert_that(metric, instance_of(Timer))
         assert_that(metric.name, is_('glork'))
         assert_that(metric.value, is_('320'))
-        assert_that(metric, has_property('kind', is_('ms')))
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_timer_seconds(self):
@@ -88,12 +88,9 @@ class TestStatsDParsing(unittest.TestCase):
         assert_that(metric, has_length(1))
         metric = metric[0]
 
-        assert_that(metric, instance_of(Timer))
+        assert_that(metric, instance_of(Set))
         assert_that(metric.name, is_('glork'))
         assert_that(metric.value, is_('3'))
-        assert_that(metric, has_property('kind', is_('s')))
-        # type is BWC
-        assert_that(metric, has_property('type', is_('s')))
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_guage(self):
@@ -114,7 +111,7 @@ class TestStatsDParsing(unittest.TestCase):
         assert_that(metrics, contains(instance_of(Counter),
                                       instance_of(Timer),
                                       instance_of(Gauge),
-                                      instance_of(Timer)))
+                                      instance_of(Set)))
 
 
 class TestMockStatsDClient(unittest.TestCase):
@@ -165,4 +162,4 @@ class TestMockStatsDClient(unittest.TestCase):
         assert_that(self.client.metrics, contains(instance_of(Counter),
                                                   instance_of(Timer),
                                                   instance_of(Gauge),
-                                                  instance_of(Timer)))
+                                                  instance_of(Set)))

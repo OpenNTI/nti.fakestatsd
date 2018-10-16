@@ -22,23 +22,26 @@ class AbstractMetric(object):
 class Gauge(AbstractMetric):
     kind = 'g'
 
-
 class Counter(AbstractMetric):
     kind = 'c'
 
+class Set(AbstractMetric):
+    kind = 's'
 
 class Timer(AbstractMetric):
-
-    def __init__(self, name, value, sampling_rate, kind):
-        super(Timer, self).__init__(name, value, sampling_rate)
-        self.kind = kind
+    kind = 'ms'
 
 METRIC_TYPES = {
     'g': Gauge,
     'c': Counter,
-    's': Timer,
+    's': Set,
     'ms': Timer
 }
+
+def _parse_sampling_data(data):
+    if not data.startswith('@'):
+        raise ValueError('Expected "@" in sampling data. %s', data)
+    return float(data[1:])
 
 def _as_metrics(data):
     """
@@ -62,9 +65,7 @@ def _as_metrics(data):
 
         if len(parts) == 3:
             sampling_data = parts.pop(-1)
-            if not sampling_data.startswith('@'):
-                raise ValueError('Expected "@" in sampling data. %s' % metric_data)
-            sampling = float(sampling_data[1:])
+            sampling = _parse_sampling_data(sampling_data)
 
         kind = parts[1]
         name, value = parts[0].split(':')
