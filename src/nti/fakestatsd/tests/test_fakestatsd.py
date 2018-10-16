@@ -156,11 +156,11 @@ class TestMockStatsDClient(unittest.TestCase):
 
 
     def test_tracks_multimetrics(self):
-        packet = b'gorets:1|c\nglork:320|ms\ngaugor:333|g\nuniques:765|s'
+        packet = 'gorets:1|c\nglork:320|ms\ngaugor:333|g\nuniques:765|s'
         self.client._send(packet)
 
         assert_that(self.client, has_length(4))
-        assert_that(self.client.packets, contains(packet))
+        assert_that(self.client.packets, contains(packet.encode('ascii')))
 
         assert_that(self.client.metrics, contains(instance_of(Counter),
                                                   instance_of(Timer),
