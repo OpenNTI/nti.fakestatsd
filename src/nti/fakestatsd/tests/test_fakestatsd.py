@@ -79,9 +79,11 @@ class TestStatsDParsing(unittest.TestCase):
         assert_that(metric, instance_of(Timer))
         assert_that(metric.name, is_('glork'))
         assert_that(metric.value, is_('320'))
+        assert_that(metric.kind, is_('ms'))
+        assert_that(metric.type, is_('ms'))
         assert_that(metric.sampling_rate, is_(none()))
 
-    def test_timer_seconds(self):
+    def test_set(self):
         packet = 'glork:3|s'
         metric = _as_metrics(packet)
 
@@ -91,6 +93,9 @@ class TestStatsDParsing(unittest.TestCase):
         assert_that(metric, instance_of(Set))
         assert_that(metric.name, is_('glork'))
         assert_that(metric.value, is_('3'))
+        assert_that(metric.kind, is_('s'))
+        assert_that(metric.type, is_('s'))
+        
         assert_that(metric.sampling_rate, is_(none()))
 
     def test_guage(self):
