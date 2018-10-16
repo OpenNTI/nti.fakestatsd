@@ -40,7 +40,7 @@ METRIC_TYPES = {
 
 def _parse_sampling_data(data):
     if not data.startswith('@'):
-        raise ValueError('Expected "@" in sampling data. %s', data)
+        raise ValueError('Expected "@" in sampling data. %s' % data)
     return float(data[1:])
 
 def _as_metrics(data):
