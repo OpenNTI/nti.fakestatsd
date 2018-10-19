@@ -36,9 +36,14 @@ class IsMetric(BaseMatcher):
             return False
         
         for attr in ('kind', 'name', 'value', 'sampling_rate', ):
-            if     getattr(self, attr, _marker) is not _marker \
-               and getattr(self, attr, _marker) != getattr(item, attr):
-                return False
+            match_attr = getattr(self, attr, _marker)
+            if match_attr is not _marker:
+                try:
+                    if not match_attr.matches(getattr(item, attr)):
+                        return False
+                except AttributeError:
+                    if match_attr != getattr(item, attr):
+                        return False
         return True
 
     def describe_to(self, description):

@@ -12,6 +12,7 @@ import unittest
 from hamcrest import assert_that
 from hamcrest import is_
 from hamcrest import is_not
+from hamcrest import none
 
 from hamcrest.core.string_description import StringDescription
 
@@ -70,4 +71,8 @@ class TestIsMetric(unittest.TestCase):
         matcher = is_counter('foo', '1', 0.1)
         matcher.describe_to(desc)
         assert_that(str(desc), is_('counter type=c name=foo value=1 sampling_rate=0.1'))
+
+    def test_components_can_be_matchers(self):
+        assert_that(self.counter, is_metric('c', 'foo', '1', none()))
+        assert_that(self.timer, is_not(is_metric('ms', 'foo', '100', none())))
         
