@@ -12,17 +12,23 @@ METRIC_TIMER_KIND = 'ms'
 
 
 def _parse_sampling_data(data):
+    """
+    Parses sampling rate from the provided packet part *data*.
+
+    Raises a `ValueError` if the packet part is invalid sampling data
+    """
     if not data.startswith('@'):
         raise ValueError('Expected "@" in sampling data. %s' % data)
     return float(data[1:])
 
+
 def _as_metric(metric_data):
     """
-    Parses a single metric packet in to `Metric`.
+    Parses a single metric packet, *metric_data*, in to a `Metric`.
     
     Metrics take the form of <name>:<value>|<type>(|@<sampling_rate>)
 
-    A ValueError is raised for invalid data
+    A `ValueError` is raised for invalid data
     """
 
     sampling = None
@@ -42,11 +48,12 @@ def _as_metric(metric_data):
 
     return Metric(name, value, kind, sampling_rate=sampling)
 
+
 def _as_metrics(data):
     """
-    Parses the statsd data packet to a _list_ of metrics.
+    Parses the statsd *data* packet to a _list_ of metrics.
 
-    See also: https://github.com/etsy/statsd/blob/master/docs/metric_types.md
+    .. seealso:: https://github.com/etsy/statsd/blob/master/docs/metric_types.md
     """
     metrics = []
 
@@ -59,14 +66,19 @@ def _as_metrics(data):
 class Metric(object):
     """
     The representation of a single statsd metric.
-
-    Attributes:
-        name (str): The metric name
-        value (str): The value provided for the metric
-        kind (str): The statsd code for the type of metric. e.g. (g, c, s, ms)
-        sampling_rate: (number, optional): The rate with which this event has been
-            sampled from.
     """
+
+    #: The metric name
+    name = None
+
+    #: The value provided for the metric
+    value = None
+
+    #: The statsd code for the type of metric. e.g. one of the METRIC_*_KIND constants
+    kind = None
+
+    #: The rate with which this event has been sampled from (optional)
+    sampling_rate = None
 
     def __init__(self, name, value, kind, sampling_rate=None):
         self.name = name
@@ -77,8 +89,8 @@ class Metric(object):
     @classmethod
     def make(cls, packet):
         """
-        Creates a metric from the provided statsd packet.
-        Raises a ValueError if packet is a multi metric packet
+        Creates a metric from the provided statsd *packet*.
+        Raises a `ValueError` if *packet* is a multi metric packet or otherwise invalid.
         """
         metrics = cls.make_all(packet)
         if len(metrics) != 1:
@@ -88,7 +100,7 @@ class Metric(object):
     @classmethod
     def make_all(cls, packet):
         """
-        Makes a list of metrics from the provided statsd packet.
+        Makes a list of metrics from the provided statsd *packet*.
         Like `make` but supports multi metric packets
         """
         return _as_metrics(packet)

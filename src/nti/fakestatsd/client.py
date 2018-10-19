@@ -9,6 +9,7 @@ from perfmetrics.statsd import StatsdClient
 
 from .metric import Metric
 
+
 class FakeStatsDClient(StatsdClient):
     """
     A mock statsd client that tracks sent statsd metrics in memory
