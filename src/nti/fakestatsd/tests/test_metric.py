@@ -16,15 +16,15 @@ from hamcrest import assert_that
 from hamcrest import contains
 from hamcrest import is_
 from hamcrest import has_length
-from hamcrest import has_property
 from hamcrest import calling
 from hamcrest import raises
 
+from ..matchers import is_counter
+from ..matchers import is_timer
+from ..matchers import is_gauge
+from ..matchers import is_set
+
 from ..metric import Metric
-from ..metric import METRIC_COUNTER_KIND
-from ..metric import METRIC_GAUGE_KIND
-from ..metric import METRIC_SET_KIND
-from ..metric import METRIC_TIMER_KIND
 
 
 class TestMetricParsing(unittest.TestCase):
@@ -49,10 +49,7 @@ class TestMetricParsing(unittest.TestCase):
         assert_that(metric, has_length(1))
         metric = metric[0]
 
-        assert_that(metric.kind, is_(METRIC_COUNTER_KIND))
-        assert_that(metric.name, is_('gorets'))
-        assert_that(metric.value, is_('1'))
-        assert_that(metric.sampling_rate, is_(none()))
+        assert_that(metric, is_counter('gorets', '1', none()))
 
     def test_sampled_counter(self):
         packet = 'gorets:1|c|@0.1'
@@ -61,10 +58,7 @@ class TestMetricParsing(unittest.TestCase):
         assert_that(metric, has_length(1))
         metric = metric[0]
 
-        assert_that(metric.kind, is_(METRIC_COUNTER_KIND))
-        assert_that(metric.name, is_('gorets'))
-        assert_that(metric.value, is_('1'))
-        assert_that(metric.sampling_rate, is_(0.1))
+        assert_that(metric, is_counter('gorets', '1', 0.1))
 
     def test_timer(self):
         packet = 'glork:320|ms'
@@ -72,12 +66,9 @@ class TestMetricParsing(unittest.TestCase):
 
         assert_that(metric, has_length(1))
         metric = metric[0]
-
-        assert_that(metric.kind, is_(METRIC_TIMER_KIND))
-        assert_that(metric.name, is_('glork'))
-        assert_that(metric.value, is_('320'))
-        assert_that(metric.kind, is_('ms'))
-        assert_that(metric.sampling_rate, is_(none()))
+        
+        assert_that(metric, is_timer('glork', '320'))
+        
 
     def test_set(self):
         packet = 'glork:3|s'
@@ -86,31 +77,24 @@ class TestMetricParsing(unittest.TestCase):
         assert_that(metric, has_length(1))
         metric = metric[0]
 
-        assert_that(metric.kind, is_(METRIC_SET_KIND))
-        assert_that(metric.name, is_('glork'))
-        assert_that(metric.value, is_('3'))
-        assert_that(metric.kind, is_('s'))
-        assert_that(metric.sampling_rate, is_(none()))
+        assert_that(metric, is_set('glork', '3'))
 
-    def test_guage(self):
+    def test_gauge(self):
         packet = 'gaugor:+333|g'
         metric = Metric.make_all(packet)
 
         assert_that(metric, has_length(1))
         metric = metric[0]
 
-        assert_that(metric.kind, is_(METRIC_GAUGE_KIND))
-        assert_that(metric.name, is_('gaugor'))
-        assert_that(metric.value, is_('+333'))
-        assert_that(metric.sampling_rate, is_(none()))
+        assert_that(metric, is_gauge('gaugor', '+333'))
 
     def test_multi_metric(self):
         packet = 'gorets:1|c\nglork:320|ms\ngaugor:333|g\nuniques:765|s'
         metrics = Metric.make_all(packet)
-        assert_that(metrics, contains(has_property('kind', METRIC_COUNTER_KIND),
-                                      has_property('kind', METRIC_TIMER_KIND),
-                                      has_property('kind', METRIC_GAUGE_KIND),
-                                      has_property('kind', METRIC_SET_KIND)))
+        assert_that(metrics, contains(is_counter(),
+                                      is_timer(),
+                                      is_gauge(),
+                                      is_set()))
 
     def test_metric_string(self):
         metric = Metric.make('gaugor:+333|g')
@@ -120,10 +104,7 @@ class TestMetricParsing(unittest.TestCase):
         metric = Metric.make_all(packet)[0]
         metric = Metric.make_all(str(metric))[0]
 
-        assert_that(metric.kind, is_(METRIC_COUNTER_KIND))
-        assert_that(metric.name, is_('gorets'))
-        assert_that(metric.value, is_('1'))
-        assert_that(metric.sampling_rate, is_(0.1))
+        assert_that(metric, is_counter('gorets', '1', 0.1))
 
     def test_factory(self):
         metric = Metric.make('gaugor:+333|g')
