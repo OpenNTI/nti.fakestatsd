@@ -13,7 +13,9 @@ from .metric import Metric
 class FakeStatsDClient(StatsdClient):
     """
     A mock statsd client that tracks sent statsd metrics in memory
-    rather than pushing them over a socket.
+    rather than pushing them over a socket. This class is a drop
+    in replacement for `perfmetrics.statsd.StatsdClient` that collects statsd
+    packets and `nti.fakestatsd.metric.Metric` that are sent through the client.
     """
 
     def __init__(self, prefix=''):
@@ -56,7 +58,7 @@ class FakeStatsDClient(StatsdClient):
 
     def __iter__(self):
         """
-        Iterates the metrics provided to this statsd client
+        Iterates the `nti.fakestatsd.metric.Metric`s provided to this statsd client
         """
         for metric, _ in self._metrics:
             yield metric
@@ -64,15 +66,25 @@ class FakeStatsDClient(StatsdClient):
 
     def iter_raw(self):
         """
-        Iterates the raw metrics provided to the stats d client.
+        Iterates the raw statsd packets provided to the stats d client.
         """
         for data, _ in self._raw:
             yield data
 
     @property
     def metrics(self):
+        """
+        A list of `nti.fakestatsd.metric.Metric` objects collected by this client.
+
+        .. seealso:: `iter_metrics`
+        """
         return [m for m in self]
 
     @property
     def packets(self):
+        """
+        A list of raw statsd packets collected by this client.
+
+        .. seealso:: `iter_raw`
+        """
         return [p for p in self.iter_raw()]

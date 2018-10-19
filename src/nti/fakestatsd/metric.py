@@ -4,10 +4,16 @@
 from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
-
+#: The statsd metric kind for Gauges
 METRIC_GAUGE_KIND = 'g'
+
+#: The statsd metric kind for Counters
 METRIC_COUNTER_KIND = 'c'
+
+#: The statsd metric kind for Sets
 METRIC_SET_KIND = 's'
+
+#: The statsd metric kind for Timers
 METRIC_TIMER_KIND = 'ms'
 
 
@@ -74,7 +80,7 @@ class Metric(object):
     #: The value provided for the metric
     value = None
 
-    #: The statsd code for the type of metric. e.g. one of the METRIC_*_KIND constants
+    #: The statsd code for the type of metric. e.g. one of the ``METRIC_*_KIND`` constants
     kind = None
 
     #: The rate with which this event has been sampled from (optional)
