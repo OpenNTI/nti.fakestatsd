@@ -47,33 +47,72 @@ class IsMetric(BaseMatcher):
         return True
 
     def describe_to(self, description):
-        kind_display_name = _metric_kind_display_name.get(self.kind, 'metric')
-        description.append_text(kind_display_name)
+        kind = '*'
+        name = '*'
+        value = '*'
+        sampling = None
         if self.kind is not _marker:
-            description.append_text(' type=%s' % self.kind)
+            kind = self.kind
         if self.name is not _marker:
-            description.append_text(' name=%s' % self.name)
+            name = self.name
         if self.value is not _marker:
-            description.append_text(' value=%s' % self.value)
+            value = self.value
         if self.sampling_rate is not _marker:
-            description.append_text(' sampling_rate=%s' % self.sampling_rate)
+            sampling = self.sampling_rate
+        description.append_text('Metric of form ')
+        description.append_text('<%s>' % str(Metric(name, value, kind, sampling)))
 
 
 def is_metric(kind=_marker, name=_marker, value=_marker, sampling_rate=_marker):
+    """
+    A hamcrest matcher that validates the specific parts of a `Metric`.
+
+    .. attribute:: kind
+        A hamcrest matcher or string that matches the kind for this metric
+
+    .. attribute:: name
+        A hamcrest matcher or string that matches the name for this metric
+
+    .. attribute:: value
+        A hamcrest matcher or string that matches the value for this metric
+
+    .. attribute:: sampling_rate
+        A hamcrest matcher or number that matches the sampling rate this metric was collected with
+    """
     return IsMetric(kind, name, value, sampling_rate)
 
 
 def is_counter(name=_marker, value=_marker, sampling_rate=_marker):
+    """
+    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_COUNTER_KIND`
+
+    .. seealso:: `is_metric`
+    """
     return is_metric(METRIC_COUNTER_KIND, name, value, sampling_rate)
 
 
 def is_gauge(name=_marker, value=_marker, sampling_rate=_marker):
+    """
+    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_GAUGE_KIND`
+
+    .. seealso:: `is_metric`
+    """
     return is_metric(METRIC_GAUGE_KIND, name, value, sampling_rate)
 
 
 def is_timer(name=_marker, value=_marker, sampling_rate=_marker):
+    """
+    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_TIMER_KIND`
+
+    .. seealso:: `is_metric`
+    """
     return is_metric(METRIC_TIMER_KIND, name, value, sampling_rate)
 
 
 def is_set(name=_marker, value=_marker, sampling_rate=_marker):
+    """
+    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_SET_KIND`
+
+    .. seealso:: `is_metric`
+    """
     return is_metric(METRIC_SET_KIND, name, value, sampling_rate)
