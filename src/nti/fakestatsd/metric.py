@@ -112,5 +112,5 @@ class Metric(object):
         return _as_metrics(packet)
 
     def __str__(self):
-        sampling_string = '|@%f' % self.sampling_rate if self.sampling_rate is not None else ''
+        sampling_string = '|@%g' % self.sampling_rate if self.sampling_rate is not None else ''
         return '%s:%s|%s%s' % (self.name, self.value, self.kind, sampling_string)
