@@ -3,7 +3,7 @@
 =========
 
 
-0.0.2 (unreleased)
+0.0.2 (2018-10-26)
 ==================
 
 - Metric kind ``s`` is now handled as a distinct type. See `issue 6
