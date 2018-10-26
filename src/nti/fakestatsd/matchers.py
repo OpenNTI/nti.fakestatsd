@@ -16,7 +16,7 @@ from .metric import Metric
 __all__ = [
     'is_metric',
     'is_counter',
-    'is_guage',
+    'is_gauge',
     'is_set',
     'is_timer',
 ]

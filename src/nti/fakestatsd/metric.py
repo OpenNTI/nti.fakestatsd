@@ -31,7 +31,7 @@ def _parse_sampling_data(data):
 def _as_metric(metric_data):
     """
     Parses a single metric packet, *metric_data*, in to a `Metric`.
-    
+
     Metrics take the form of <name>:<value>|<type>(|@<sampling_rate>)
 
     A `ValueError` is raised for invalid data
@@ -96,7 +96,9 @@ class Metric(object):
     def make(cls, packet):
         """
         Creates a metric from the provided statsd *packet*.
-        Raises a `ValueError` if *packet* is a multi metric packet or otherwise invalid.
+
+        :raises ValueError: if *packet* is a multi metric packet or
+                 otherwise invalid.
         """
         metrics = cls.make_all(packet)
         if len(metrics) != 1:
@@ -107,6 +109,7 @@ class Metric(object):
     def make_all(cls, packet):
         """
         Makes a list of metrics from the provided statsd *packet*.
+
         Like `make` but supports multi metric packets
         """
         return _as_metrics(packet)
