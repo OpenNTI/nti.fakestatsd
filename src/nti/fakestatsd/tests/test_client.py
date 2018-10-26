@@ -7,13 +7,14 @@ __docformat__ = "restructuredtext en"
 # disable: accessing protected members, too many methods
 # pylint: disable=W0212,R0904
 
+import doctest
+import os
 import unittest
 
 from hamcrest import assert_that
 from hamcrest import contains
 
 from hamcrest import has_length
-from hamcrest import instance_of
 from hamcrest import has_properties
 from hamcrest import has_property
 
@@ -72,3 +73,31 @@ class TestMockStatsDClient(unittest.TestCase):
                                                   has_property('kind', METRIC_TIMER_KIND),
                                                   has_property('kind', METRIC_GAUGE_KIND),
                                                   has_property('kind', METRIC_SET_KIND)))
+
+def test_suite():
+    root = this_dir = os.path.dirname(os.path.abspath(__file__))
+    while not os.path.exists(os.path.join(root, 'setup.py')):
+        prev, root = root, os.path.dirname(root)
+        if root == prev:
+            # Let's avoid infinite loops at root
+            raise AssertionError('could not find my setup.py')
+    docs = os.path.join(root, 'docs')
+
+    optionflags = (
+        doctest.NORMALIZE_WHITESPACE
+        | doctest.ELLIPSIS
+        | doctest.IGNORE_EXCEPTION_DETAIL
+    )
+
+    index_rst = os.path.join(root, 'README.rst')
+    # Can't pass absolute paths to DocFileSuite, needs to be
+    # module relative
+    index_rst = os.path.relpath(index_rst, this_dir)
+
+    return unittest.TestSuite((
+        unittest.defaultTestLoader.loadTestsFromName(__name__),
+        doctest.DocFileSuite(
+            index_rst,
+            optionflags=optionflags
+        ),
+    ))
