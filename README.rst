@@ -42,7 +42,7 @@ counters, set gauges, etc:
 Unlike `perfmetrics.statsd.StatsdClient`, `~.FakeStatsDClient` simply
 tracks the statsd packets that would be sent. This information is
 exposed on our ``test_client`` both as the raw statsd packet, and for
-conveninece this information is also parsed and exposed as `~.Metric`
+convenience this information is also parsed and exposed as `~.Metric`
 objects. For complete details see `~.FakeStatsDClient` and `~.Metric`.
 
 .. code-block:: pycon
