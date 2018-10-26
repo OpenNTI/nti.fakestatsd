@@ -13,6 +13,13 @@ from .metric import METRIC_SET_KIND
 
 from .metric import Metric
 
+__all__ = [
+    'is_metric',
+    'is_counter',
+    'is_guage',
+    'is_set',
+    'is_timer',
+]
 
 _marker = object()
 
@@ -34,7 +41,7 @@ class IsMetric(BaseMatcher):
     def _matches(self, item):
         if not isinstance(item, Metric):
             return False
-        
+
         for attr in ('kind', 'name', 'value', 'sampling_rate', ):
             match_attr = getattr(self, attr, _marker)
             if match_attr is not _marker:
@@ -65,26 +72,21 @@ class IsMetric(BaseMatcher):
 
 def is_metric(kind=_marker, name=_marker, value=_marker, sampling_rate=_marker):
     """
-    A hamcrest matcher that validates the specific parts of a `Metric`.
+    A hamcrest matcher that validates the specific parts of a `~.Metric`.
 
-    .. attribute:: kind
-        A hamcrest matcher or string that matches the kind for this metric
-
-    .. attribute:: name
-        A hamcrest matcher or string that matches the name for this metric
-
-    .. attribute:: value
-        A hamcrest matcher or string that matches the value for this metric
-
-    .. attribute:: sampling_rate
-        A hamcrest matcher or number that matches the sampling rate this metric was collected with
+    :keyword str kind: A hamcrest matcher or string that matches the kind for this metric
+    :keyword str name: A hamcrest matcher or string that matches the name for this metric
+    :keyword value: A hamcrest matcher or string that matches the value for this metric
+    :keyword sampling_rate: A hamcrest matcher or
+        number that matches the sampling rate this metric was collected with
     """
     return IsMetric(kind, name, value, sampling_rate)
 
 
 def is_counter(name=_marker, value=_marker, sampling_rate=_marker):
     """
-    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_COUNTER_KIND`
+    A hamcrest matcher validating the parts of a `~.Metric` of kind
+    `~.METRIC_COUNTER_KIND`
 
     .. seealso:: `is_metric`
     """
@@ -93,7 +95,8 @@ def is_counter(name=_marker, value=_marker, sampling_rate=_marker):
 
 def is_gauge(name=_marker, value=_marker, sampling_rate=_marker):
     """
-    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_GAUGE_KIND`
+    A hamcrest matcher validating the parts of a `~.Metric` of kind
+    `~.METRIC_GAUGE_KIND`
 
     .. seealso:: `is_metric`
     """
@@ -102,7 +105,8 @@ def is_gauge(name=_marker, value=_marker, sampling_rate=_marker):
 
 def is_timer(name=_marker, value=_marker, sampling_rate=_marker):
     """
-    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_TIMER_KIND`
+    A hamcrest matcher validating the parts of a `~.Metric` of kind
+    `~.METRIC_TIMER_KIND`
 
     .. seealso:: `is_metric`
     """
@@ -111,7 +115,8 @@ def is_timer(name=_marker, value=_marker, sampling_rate=_marker):
 
 def is_set(name=_marker, value=_marker, sampling_rate=_marker):
     """
-    A hamcrest matcher validating the parts of a `Metric` of kind `METRIC_SET_KIND`
+    A hamcrest matcher validating the parts of a `~.Metric` of kind
+    `~.METRIC_SET_KIND`
 
     .. seealso:: `is_metric`
     """
