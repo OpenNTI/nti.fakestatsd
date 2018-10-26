@@ -5,7 +5,6 @@
    :caption: Contents:
 
    client
-   metric
    matchers
    changelog
 
