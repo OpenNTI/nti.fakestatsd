@@ -26,7 +26,12 @@ setup(
     ),
     license='Apache',
     keywords='python perfmetrics statsd',
-    url='https://github.com/NextThought/nti.statsd',
+    url='https://github.com/NextThought/nti.fakestatsd/',
+    project_urls={
+        'Bug Tracker': 'https://github.com/NextThought/nti.fakestatsd/issues',
+        'Source Code': 'https://github.com/NextThought/nti.fakestatsd/',
+        'Documentation': 'https://ntifakestatsd.readthedocs.io/',
+    },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
