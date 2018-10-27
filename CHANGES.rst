@@ -6,7 +6,8 @@
 0.0.3 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Allow matcher values to be numbers or other matchers. See `issue 15
+  <https://github.com/NextThought/nti.fakestatsd/issues/15>`_.
 
 
 0.0.2 (2018-10-26)
