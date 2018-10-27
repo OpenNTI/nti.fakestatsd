@@ -117,3 +117,8 @@ class Metric(object):
     def __str__(self):
         sampling_string = '|@%g' % self.sampling_rate if self.sampling_rate is not None else ''
         return '%s:%s|%s%s' % (self.name, self.value, self.kind, sampling_string)
+
+    def __repr__(self):
+        return "Metric(name=%r, value=%r, kind=%r, sampling_rate=%r)" % (
+            self.name, self.value, self.kind, self.sampling_rate
+        )

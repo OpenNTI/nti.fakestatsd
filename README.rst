@@ -50,7 +50,7 @@ objects. For complete details see `~.FakeStatsDClient` and `~.Metric`.
   >>> test_client.packets
   ['request_c:1|c', 'active_sessions:320|g']
   >>> test_client.metrics
-  [<nti.fakestatsd.metric.Metric object at ...>, <nti.fakestatsd.metric.Metric object at ...>]
+  [Metric(name='request_c', value='1', kind='c', sampling_rate=None), Metric(name='active_sessions', value='320', kind='g', sampling_rate=None)]
 
 For validating metrics we provide a set of hamcrest matchers for use
 in test assertions:
@@ -61,17 +61,30 @@ in test assertions:
   >>> from hamcrest import contains
   >>> from nti.fakestatsd.matchers import is_metric
   >>> from nti.fakestatsd.matchers import is_gauge
+
+We can use both strings and numbers (or any matcher) for the value:
+
+  >>> assert_that(test_client,
+  ...     contains(is_metric('c', 'request_c', '1'),
+  ...              is_gauge('active_sessions', 320)))
   >>> assert_that(test_client,
   ...     contains(is_metric('c', 'request_c', '1'),
   ...              is_gauge('active_sessions', '320')))
+  >>> from hamcrest import is_
+  >>> assert_that(test_client,
+  ...     contains(is_metric('c', 'request_c', '1'),
+  ...              is_gauge('active_sessions', is_('320'))))
+
+If the matching fails, we get a descriptive error:
+
   >>> assert_that(test_client,
   ...     contains(is_gauge('request_c', '1'),
   ...              is_gauge('active_sessions', '320')))
   Traceback (most recent call last):
   ...
   AssertionError:
-  Expected: a sequence containing [Metric of form <request_c:1|g>, Metric of form <active_sessions:320|g>]
-       but: item 0: was <request_c:1|c>
+  Expected: a sequence containing [(an instance of Metric and (an object with a property 'kind' matching 'g' and an object with a property 'name' matching 'request_c' and an object with a property 'value' matching '1')), (an instance of Metric and (an object with a property 'kind' matching 'g' and an object with a property 'name' matching 'active_sessions' and an object with a property 'value' matching '320'))]
+         but: item 0: was Metric(name='request_c', value='1', kind='c', sampling_rate=None)
 
 
 For complete details and the changelog, see the `documentation

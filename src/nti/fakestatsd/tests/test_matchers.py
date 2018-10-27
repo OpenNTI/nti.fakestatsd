@@ -9,8 +9,9 @@ __docformat__ = "restructuredtext en"
 
 import unittest
 
+from hamcrest import all_of
 from hamcrest import assert_that
-from hamcrest import is_
+from hamcrest import contains_string
 from hamcrest import is_not
 from hamcrest import none
 
@@ -70,9 +71,25 @@ class TestIsMetric(unittest.TestCase):
         desc = StringDescription()
         matcher = is_counter('foo', '1', 0.1)
         matcher.describe_to(desc)
-        assert_that(str(desc), is_('Metric of form <foo:1|c|@0.1>'))
+        desc = str(desc)
+        assert_that(
+            desc,
+            all_of(
+                contains_string(
+                    "(an instance of Metric and "),
+                contains_string(
+                    "an object with a property 'kind' matching 'c'"),
+                contains_string(
+                    "an object with a property 'name' matching 'foo'"),
+                contains_string(
+                    "an object with a property 'value' matching '1'"),
+                contains_string(
+                    "an object with a property 'sampling_rate' matching <0.1>"
+                )
+            )
+        )
+
 
     def test_components_can_be_matchers(self):
         assert_that(self.counter, is_metric('c', 'foo', '1', none()))
         assert_that(self.timer, is_not(is_metric('ms', 'foo', '100', none())))
-        
