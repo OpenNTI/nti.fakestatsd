@@ -3,12 +3,11 @@
 =========
 
 
-0.0.3 (unreleased)
+1.0.0 (unreleased)
 ==================
 
-- Allow matcher values to be numbers or other matchers. See `issue 15
-  <https://github.com/NextThought/nti.fakestatsd/issues/15>`_.
-
+- This project has been merged into ``perfmetrics.testing``. There
+  will be no further development.
 
 0.0.2 (2018-10-26)
 ==================

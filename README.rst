@@ -20,6 +20,13 @@
         :target: http://ntifakestatsd.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
+.. warning::
+
+   This project is deprecated and unmaintained. Its code has moved
+   into ``perfmetrics.testing``.
+
+   The following is for historical information only.
+
 nti.fakestatsd is a testing client for verifying StatsD metrics
 emitted by perfmetrics.
 
@@ -50,7 +57,7 @@ objects. For complete details see `~.FakeStatsDClient` and `~.Metric`.
   >>> test_client.packets
   ['request_c:1|c', 'active_sessions:320|g']
   >>> test_client.metrics
-  [Metric(name='request_c', value='1', kind='c', sampling_rate=None), Metric(name='active_sessions', value='320', kind='g', sampling_rate=None)]
+  [Observation(name='request_c', value='1', kind='c', sampling_rate=None), Observation(name='active_sessions', value='320', kind='g', sampling_rate=None)]
 
 For validating metrics we provide a set of hamcrest matchers for use
 in test assertions:
