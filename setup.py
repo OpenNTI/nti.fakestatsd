@@ -2,7 +2,7 @@
 import codecs
 from setuptools import setup, find_packages
 
-version = '0.0.3.dev0'
+version = '1.0.0.dev0'
 
 entry_points = {
 }
@@ -33,7 +33,7 @@ setup(
         'Documentation': 'https://ntifakestatsd.readthedocs.io/',
     },
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        "Development Status :: 7 - Inactive",
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
@@ -52,7 +52,7 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=[
-        'perfmetrics',
+        'perfmetrics >= 3.0.0',
         'setuptools',
     ],
     extras_require={

@@ -76,7 +76,7 @@ class TestIsMetric(unittest.TestCase):
             desc,
             all_of(
                 contains_string(
-                    "(an instance of Metric and "),
+                    "(an instance of Observation and "),
                 contains_string(
                     "an object with a property 'kind' matching 'c'"),
                 contains_string(

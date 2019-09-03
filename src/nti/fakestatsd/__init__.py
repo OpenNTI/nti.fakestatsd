@@ -4,6 +4,7 @@
 from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
+
 __all__ = [
     'FakeStatsDClient',
     'Metric',
@@ -13,9 +14,10 @@ __all__ = [
     'METRIC_TIMER_KIND',
 ]
 
+from perfmetrics.testing import Observation as Metric
+from perfmetrics.testing import OBSERVATION_KIND_COUNTER as METRIC_COUNTER_KIND
+from perfmetrics.testing import OBSERVATION_KIND_GAUGE as METRIC_GAUGE_KIND
+from perfmetrics.testing import OBSERVATION_KIND_SET as METRIC_SET_KIND
+from perfmetrics.testing import OBSERVATION_KIND_TIMER as METRIC_TIMER_KIND
+
 from .client import FakeStatsDClient
-from .metric import Metric
-from .metric import METRIC_COUNTER_KIND
-from .metric import METRIC_GAUGE_KIND
-from .metric import METRIC_SET_KIND
-from .metric import METRIC_TIMER_KIND
