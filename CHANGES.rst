@@ -3,7 +3,7 @@
 =========
 
 
-1.0.0 (unreleased)
+1.0.0 (2019-09-03)
 ==================
 
 - This project has been merged into ``perfmetrics.testing``. There
